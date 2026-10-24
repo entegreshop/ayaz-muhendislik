@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  ayaz-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ayaz_muhendislik_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+    volumes:
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./index.html:/app/index.html
+      - ./css:/app/css
+      - ./js:/app/js

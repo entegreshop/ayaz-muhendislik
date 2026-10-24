@@ -1,0 +1,23 @@
+{
+  "name": "ayaz-muhendislik-web",
+  "version": "1.0.0",
+  "description": "Ayaz Mühendislik Endüstriyel İzolasyon ve Sac Kaplama Web Platformu (Production Backend & Frontend)",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "ayaz-muhendislik",
+    "endustriyel-izolasyon",
+    "chiller-yalitim",
+    "jacketing",
+    "sac-kaplama"
+  ],
+  "author": "Ayaz Mühendislik",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

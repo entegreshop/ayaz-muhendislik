@@ -1,0 +1,57 @@
+{
+  "service_name": "Ayaz Mühendislik B2B Headless Modular Architecture",
+  "compatible_frameworks": ["Medusa v2", "Next.js 14+ App Router", "Tailwind CSS"],
+  "medusa_modules": {
+    "products": [
+      {
+        "id": "prod_chiller_insulation",
+        "title": "Chiller ve Soğutma Grubu Boru İzolasyonu",
+        "handle": "chiller-boru-izolasyonu",
+        "description": "Glikol ve CHW devreleri için kapalı gözenekli NBR kauçuk ve 0.8mm alüminyum sac kaplama (jacketing) uygulaması.",
+        "type": "industrial_service",
+        "tags": ["chiller", "sogutma", "aluminyum-sac", "din-4140"],
+        "options": [
+          { "title": "Boru Çapı (DN)", "values": ["DN50", "DN100", "DN150", "DN200", "DN300", "DN400+"] },
+          { "title": "Sac Tipi", "values": ["0.8mm Embossed Alüminyum", "1.0mm Eloksallı Alüminyum", "304 Paslanmaz Çelik"] },
+          { "title": "İzolasyon Kalınlığı", "values": ["19mm NBR", "25mm NBR", "32mm NBR", "Çift Kat 50mm NBR"] }
+        ]
+      },
+      {
+        "id": "prod_process_tank_cladding",
+        "title": "Endüstriyel Proses Tankı Yalıtımı ve Sac Kılıflama",
+        "handle": "proses-tanki-yalitimi",
+        "description": "Silindirik dik proses ve akümülasyon tankları için omega karkaslı alüminyum sac kaplama.",
+        "type": "industrial_service",
+        "tags": ["tank", "proses", "izolasyon", "astm-c585"]
+      },
+      {
+        "id": "prod_valve_insulation_boxes",
+        "title": "Mandallı Sökülebilir Vana & Flanş Sac Kutuları",
+        "handle": "mandalli-vana-sac-kutulari",
+        "description": "Paslanmaz yaylı mandallı (toggle clamp), 30 saniyede sökülebilir modüler sac vana kutusu imalatı.",
+        "type": "industrial_modular_product",
+        "tags": ["vana-kutusu", "flans-ceketi", "quick-release"]
+      }
+    ],
+    "rfq_endpoint_contract": {
+      "path": "/store/quotes/request",
+      "method": "POST",
+      "payload_example": {
+        "customer": {
+          "name": "Ahmet Yılmaz",
+          "company": "Anadolu Endüstri A.Ş.",
+          "phone": "+905321112233",
+          "email": "ahmet@anadoluendustri.com"
+        },
+        "project_details": {
+          "service_type": "Chiller ve Soğutma Grubu Boru İzolasyonu",
+          "estimated_length_meters": 400,
+          "fluid_temperature_celsius": 4,
+          "ambient_temperature_celsius": 32,
+          "site_location": "Kocaeli OSB",
+          "notes": "DN150 ana glikol hattı ve 2 adet eşanjör grubu için yerinde keşif talebi."
+        }
+      }
+    }
+  }
+}
