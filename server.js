@@ -18,6 +18,7 @@ const __dirname = path.dirname(__filename);
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const HOST = process.env.HOST || '0.0.0.0';
 const DATA_DIR = path.join(__dirname, 'data');
+const QUOTES_FILE = path.join(DATA_DIR, 'quotes.json');
 const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
 const activeAdminTokens = new Set();
 
