@@ -15,7 +15,7 @@ COPY index.html ./
 COPY css/ ./css/
 COPY js/ ./js/
 COPY assets/ ./assets/
-COPY data/ ./data/
+RUN mkdir -p /app/data
 
 # Expose port
 EXPOSE 3000
