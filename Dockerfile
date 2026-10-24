@@ -12,6 +12,7 @@ ENV HOST=0.0.0.0
 COPY package.json ./
 COPY server.js ./
 COPY index.html ./
+COPY admin.html ./
 COPY css/ ./css/
 COPY js/ ./js/
 COPY assets/ ./assets/

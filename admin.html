@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AYAZ MÜHENDİSLİK | Yönetim Paneli</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body class="bg-[#050811] text-slate-100 min-h-screen font-sans">
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-view" class="min-h-screen flex items-center justify-center p-6 relative">
+    <div class="glow-orb glow-blue w-96 h-96 -top-20 -left-20"></div>
+    <div class="glow-orb glow-cyan w-96 h-96 -bottom-20 -right-20"></div>
+
+    <div class="w-full max-w-md rounded-3xl glass-panel border border-slate-800 p-8 sm:p-10 space-y-6 relative z-10 bg-slate-950/90 shadow-2xl">
+      <div class="text-center space-y-2">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center mx-auto text-slate-950 font-bold text-xl shadow-lg shadow-sky-500/20">
+          A
+        </div>
+        <h1 class="text-2xl font-bold text-white tracking-tight font-heading">AYAZ MÜHENDİSLİK</h1>
+        <p class="text-xs text-slate-400 font-mono">Yönetim ve Teklif Takip Paneli</p>
+      </div>
+
+      <form id="login-form" class="space-y-4">
+        <div class="space-y-1.5">
+          <label for="admin-pass" class="block text-xs font-bold uppercase tracking-wider text-slate-300">Yönetici Şifresi</label>
+          <input type="password" id="admin-pass" required placeholder="••••••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-sky-400 transition-colors">
+        </div>
+
+        <div id="login-error" class="hidden p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs">
+          Hatalı yönetici şifresi!
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 shadow-lg shadow-sky-500/20 transition-all">
+          Giriş Yap
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD VIEW -->
+  <div id="dashboard-view" class="hidden min-h-screen flex flex-col">
+    <!-- Admin Header -->
+    <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-sky-500 flex items-center justify-center text-slate-950 font-bold">A</div>
+        <div>
+          <span class="font-bold text-white font-heading text-base">AYAZ MÜHENDİSLİK</span>
+          <span class="text-[10px] text-sky-400 font-mono block">Canlı Yönetim Merkezi</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <a href="/" target="_blank" class="text-xs text-slate-300 hover:text-white px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center gap-1.5">
+          <span>Siteyi Görüntüle</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+        <button id="logout-btn" class="text-xs text-rose-400 hover:text-rose-300 px-3 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20">
+          Çıkış Yap
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="bg-slate-900/60 border-b border-slate-800 px-6 py-3 flex gap-4 text-xs font-bold">
+      <button id="tab-quotes" class="px-4 py-2 rounded-xl bg-sky-500 text-white transition-all">
+        Gelen Teklifler (<span id="quote-count">0</span>)
+      </button>
+      <button id="tab-settings" class="px-4 py-2 rounded-xl bg-slate-900 text-slate-400 hover:text-white transition-all">
+        Site & İletişim Ayarları
+      </button>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full">
+      
+      <!-- QUOTES TAB -->
+      <section id="quotes-section" class="space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-white font-heading">Teklif ve Keşif Talepleri (RFQ)</h2>
+            <p class="text-xs text-slate-400">Web sitesinden form dolduran müşteriler burada listelenir.</p>
+          </div>
+          <button id="refresh-quotes-btn" class="text-xs text-slate-300 hover:text-white px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 flex items-center gap-1.5 self-start">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Listeyi Yenile
+          </button>
+        </div>
+
+        <div class="rounded-2xl glass-panel border border-slate-800 overflow-hidden bg-slate-950/60">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-900/80 border-b border-slate-800 text-slate-400 font-mono uppercase tracking-wider">
+                <tr>
+                  <th class="p-3.5">Referans</th>
+                  <th class="p-3.5">Tarih</th>
+                  <th class="p-3.5">Müşteri / Yetkili</th>
+                  <th class="p-3.5">Firma</th>
+                  <th class="p-3.5">Telefon</th>
+                  <th class="p-3.5">Hizmet Türü</th>
+                  <th class="p-3.5">Metraj / Lokasyon</th>
+                  <th class="p-3.5 text-right">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="quotes-tbody" class="divide-y divide-slate-800 text-slate-300">
+                <tr>
+                  <td colspan="8" class="p-6 text-center text-slate-500">Yükleniyor...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS TAB -->
+      <section id="settings-section" class="hidden space-y-6">
+        <div>
+          <h2 class="text-xl font-bold text-white font-heading">Site İletişim ve Metin Ayarları</h2>
+          <p class="text-xs text-slate-400">Bu sayfada yaptığınız değişiklikler kod yazmadan anında web sitesine yansır.</p>
+        </div>
+
+        <form id="settings-form" class="rounded-2xl glass-panel border border-slate-800 p-6 sm:p-8 space-y-6 bg-slate-950/60">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div class="space-y-1.5">
+              <label class="block text-xs font-bold text-slate-300">Sabit Telefon</label>
+              <input type="text" id="set-phone" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400">
+            </div>
+            <div class="space-y-1.5">
+              <label class="block text-xs font-bold text-slate-300">Mobil / Keşif Hattı</label>
+              <input type="text" id="set-phone-mobile" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div class="space-y-1.5">
+              <label class="block text-xs font-bold text-slate-300">WhatsApp Numarası (Ülke koduyla, boşluksuz: 905XXXXXXXXX)</label>
+              <input type="text" id="set-whatsapp" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400">
+            </div>
+            <div class="space-y-1.5">
+              <label class="block text-xs font-bold text-slate-300">E-Posta Adresi</label>
+              <input type="email" id="set-email" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400">
+            </div>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="block text-xs font-bold text-slate-300">Şirket / Atölye Adresi</label>
+            <input type="text" id="set-address" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400">
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="block text-xs font-bold text-slate-300">Hero Ana Başlık</label>
+            <input type="text" id="set-hero-title" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400">
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="block text-xs font-bold text-slate-300">Hero Alt Açıklama</label>
+            <textarea id="set-hero-subtitle" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400 resize-none"></textarea>
+          </div>
+
+          <div class="pt-4 border-t border-slate-800 space-y-1.5">
+            <label class="block text-xs font-bold text-amber-400">Yeni Yönetici Şifresi (Boş bırakırsanız mevcut şifre kalır)</label>
+            <input type="password" id="set-admin-pass" placeholder="Değiştirmek istemiyorsanız boş bırakın" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400">
+          </div>
+
+          <div class="pt-2 flex items-center justify-between">
+            <span id="settings-msg" class="text-xs font-mono text-emerald-400 hidden">✓ Ayarlar başarıyla kaydedildi!</span>
+            <button type="submit" class="ml-auto px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-sky-500 hover:bg-sky-400 transition-all shadow-lg shadow-sky-500/20">
+              Ayarları Kaydet
+            </button>
+          </div>
+
+        </form>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    let authToken = sessionStorage.getItem('ayaz_admin_token') || '';
+
+    const loginView = document.getElementById('login-view');
+    const dashboardView = document.getElementById('dashboard-view');
+    const loginForm = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
+    const adminPassInput = document.getElementById('admin-pass');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    const tabQuotes = document.getElementById('tab-quotes');
+    const tabSettings = document.getElementById('tab-settings');
+    const quotesSection = document.getElementById('quotes-section');
+    const settingsSection = document.getElementById('settings-section');
+    const quoteCount = document.getElementById('quote-count');
+    const quotesTbody = document.getElementById('quotes-tbody');
+    const refreshQuotesBtn = document.getElementById('refresh-quotes-btn');
+
+    const settingsForm = document.getElementById('settings-form');
+    const settingsMsg = document.getElementById('settings-msg');
+
+    // Check existing auth
+    if (authToken) {
+      showDashboard();
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pass = adminPassInput.value.trim();
+      loginError.classList.add('hidden');
+
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pass })
+        });
+        const data = await res.json();
+        if (data.success && data.token) {
+          authToken = data.token;
+          sessionStorage.setItem('ayaz_admin_token', authToken);
+          showDashboard();
+        } else {
+          loginError.classList.remove('hidden');
+        }
+      } catch (err) {
+        loginError.classList.remove('hidden');
+      }
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      authToken = '';
+      sessionStorage.removeItem('ayaz_admin_token');
+      dashboardView.classList.add('hidden');
+      loginView.classList.remove('hidden');
+    });
+
+    function showDashboard() {
+      loginView.classList.add('hidden');
+      dashboardView.classList.remove('hidden');
+      loadQuotes();
+      loadSettings();
+    }
+
+    // Tabs
+    tabQuotes.addEventListener('click', () => {
+      tabQuotes.classList.replace('bg-slate-900', 'bg-sky-500');
+      tabQuotes.classList.replace('text-slate-400', 'text-white');
+      tabSettings.classList.replace('bg-sky-500', 'bg-slate-900');
+      tabSettings.classList.replace('text-white', 'text-slate-400');
+      quotesSection.classList.remove('hidden');
+      settingsSection.classList.add('hidden');
+    });
+
+    tabSettings.addEventListener('click', () => {
+      tabSettings.classList.replace('bg-slate-900', 'bg-sky-500');
+      tabSettings.classList.replace('text-slate-400', 'text-white');
+      tabQuotes.classList.replace('bg-sky-500', 'bg-slate-900');
+      tabQuotes.classList.replace('text-white', 'text-slate-400');
+      settingsSection.classList.remove('hidden');
+      quotesSection.classList.add('hidden');
+    });
+
+    refreshQuotesBtn.addEventListener('click', loadQuotes);
+
+    // Load Quotes
+    async function loadQuotes() {
+      try {
+        const res = await fetch('/api/admin/quotes', {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        if (res.status === 401) {
+          logoutBtn.click();
+          return;
+        }
+        const data = await res.json();
+        const quotes = data.quotes || [];
+        quoteCount.textContent = quotes.length;
+
+        if (quotes.length === 0) {
+          quotesTbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-500">Henüz gelen bir teklif talebi bulunmuyor.</td></tr>`;
+          return;
+        }
+
+        quotesTbody.innerHTML = quotes.map(q => {
+          const dateStr = new Date(q.createdAt).toLocaleString('tr-TR', { dateStyle: 'short', timeStyle: 'short' });
+          const waMsg = encodeURIComponent(`Merhaba ${q.name}, Ayaz Mühendislik'ten ulaşıyorum. Web sitemizden oluşturduğunuz ${q.ticket} referanslı teklif talebinizle ilgili görüşebilir miyiz?`);
+          const waLink = `https://wa.me/${q.phone.replace(/[^0-9]/g, '')}?text=${waMsg}`;
+
+          return `
+            <tr class="hover:bg-slate-900/50 transition-colors">
+              <td class="p-3.5 font-mono text-sky-400 font-bold">${q.ticket}</td>
+              <td class="p-3.5 font-mono text-slate-400">${dateStr}</td>
+              <td class="p-3.5 font-bold text-white">${q.name}</td>
+              <td class="p-3.5 text-slate-300">${q.company || '-'}</td>
+              <td class="p-3.5 font-mono text-slate-300">${q.phone}</td>
+              <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-sky-500/10 text-sky-300 border border-sky-400/20 text-[11px]">${q.service}</span></td>
+              <td class="p-3.5 text-slate-400">${q.estimatedLength} / ${q.location}</td>
+              <td class="p-3.5 text-right space-x-2">
+                <a href="${waLink}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600 hover:text-white transition-all text-[11px] font-mono">
+                  WhatsApp
+                </a>
+                <button onclick="deleteQuote('${q.id}')" class="px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all text-[11px]">
+                  Sil
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    window.deleteQuote = async function(id) {
+      if (!confirm('Bu teklif kaydını silmek istediğinize emin misiniz?')) return;
+      try {
+        await fetch(`/api/admin/quotes/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        loadQuotes();
+      } catch (err) {
+        alert('Silme işlemi başarısız.');
+      }
+    };
+
+    // Load Settings
+    async function loadSettings() {
+      try {
+        const res = await fetch('/api/admin/settings', {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await res.json();
+        const s = data.settings || {};
+        document.getElementById('set-phone').value = s.phone || '';
+        document.getElementById('set-phone-mobile').value = s.phone_mobile || '';
+        document.getElementById('set-whatsapp').value = s.whatsapp || '';
+        document.getElementById('set-email').value = s.email || '';
+        document.getElementById('set-address').value = s.address || '';
+        document.getElementById('set-hero-title').value = s.hero_title || '';
+        document.getElementById('set-hero-subtitle').value = s.hero_subtitle || '';
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    settingsForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        phone: document.getElementById('set-phone').value.trim(),
+        phone_mobile: document.getElementById('set-phone-mobile').value.trim(),
+        whatsapp: document.getElementById('set-whatsapp').value.trim(),
+        email: document.getElementById('set-email').value.trim(),
+        address: document.getElementById('set-address').value.trim(),
+        hero_title: document.getElementById('set-hero-title').value.trim(),
+        hero_subtitle: document.getElementById('set-hero-subtitle').value.trim(),
+        new_password: document.getElementById('set-admin-pass').value.trim()
+      };
+
+      try {
+        const res = await fetch('/api/admin/settings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          settingsMsg.classList.remove('hidden');
+          setTimeout(() => settingsMsg.classList.add('hidden'), 3500);
+          document.getElementById('set-admin-pass').value = '';
+        }
+      } catch (err) {
+        alert('Ayarlar kaydedilemedi.');
+      }
+    });
+
+  </script>
+</body>
+</html>

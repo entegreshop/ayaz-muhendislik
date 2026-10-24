@@ -18,7 +18,8 @@ const __dirname = path.dirname(__filename);
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const HOST = process.env.HOST || '0.0.0.0';
 const DATA_DIR = path.join(__dirname, 'data');
-const QUOTES_FILE = path.join(DATA_DIR, 'quotes.json');
+const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
+const activeAdminTokens = new Set();
 
 // Ensure data directory exists
 if (!fs.existsSync(DATA_DIR)) {
@@ -26,6 +27,35 @@ if (!fs.existsSync(DATA_DIR)) {
 }
 if (!fs.existsSync(QUOTES_FILE)) {
   fs.writeFileSync(QUOTES_FILE, JSON.stringify([], null, 2), 'utf-8');
+}
+if (!fs.existsSync(SETTINGS_FILE)) {
+  fs.writeFileSync(SETTINGS_FILE, JSON.stringify({
+    phone: "+90 (212) 500 00 00",
+    phone_mobile: "+90 (500) 000 00 00",
+    whatsapp: "905000000000",
+    email: "info@ayazmuhendislik.com",
+    address: "Organize Sanayi Bölgesi, Endüstriyel Tesisler Caddesi, No: 42",
+    hero_title: "Soğutma Hatlarında Kusursuz İzolasyon, Maksimum Enerji Verimliliği.",
+    hero_subtitle: "Endüstriyel tesisler, soğuk hava depoları ve merkezi chiller santrallerinde sıfır yoğuşma garantili, termografik kaçak test onaylı elastomerik kauçuk ve hassas pres alüminyum sac kaplama (jacketing) mühendisliği.",
+    admin_password: "ayazadmin2026"
+  }, null, 2), 'utf-8');
+}
+
+function getSettings() {
+  try {
+    return JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+  } catch (e) {
+    return {};
+  }
+}
+
+function updateSettingsFile(newSettings) {
+  try {
+    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(newSettings, null, 2), 'utf-8');
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 // MIME Types Map
@@ -164,7 +194,10 @@ const server = http.createServer(async (req, res) => {
       const waText = encodeURIComponent(
         `Merhaba Ayaz Mühendislik,\nWeb siteniz üzerinden yeni teklif/keşif talebi oluşturuldu.\nReferans: ${ticketRef}\nYetkili: ${name}\nFirma: ${company || '-'}\nTel: ${phone}\nHizmet: ${service || '-'}\nMetraj: ${length || '-'}\nLokasyon: ${location || '-'}\nNot: ${notes || '-'}`
       );
-      const whatsappUrl = `https://wa.me/905000000000?text=${waText}`;
+      // Read dynamic whatsapp from settings
+      const settings = getSettings();
+      const targetWa = (settings.whatsapp || '905000000000').replace(/[^0-9]/g, '');
+      const whatsappUrl = `https://wa.me/${targetWa}?text=${waText}`;
 
       res.writeHead(201, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
@@ -178,6 +211,154 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: 'Sunucu hatası oluştu.' }));
     }
+    return;
+  }
+
+  // -----------------------------------------------------------
+  // ROUTE: Admin Dashboard Page
+  // -----------------------------------------------------------
+  if (pathname === '/admin' || pathname === '/admin/') {
+    const adminPath = path.join(__dirname, 'admin.html');
+    fs.readFile(adminPath, (err, content) => {
+      if (err) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('Admin HTML not found');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(content);
+    });
+    return;
+  }
+
+  // Helper: Verify Admin Token
+  function verifyAdmin(req) {
+    const auth = req.headers['authorization'] || '';
+    const token = auth.replace(/^Bearer\s+/i, '').trim();
+    return activeAdminTokens.has(token);
+  }
+
+  // -----------------------------------------------------------
+  // API ROUTE: Admin Login
+  // -----------------------------------------------------------
+  if (pathname === '/api/admin/login' && req.method === 'POST') {
+    try {
+      const payload = await parseJsonBody(req);
+      const settings = getSettings();
+      const expectedPassword = settings.admin_password || process.env.ADMIN_PASSWORD || 'ayazadmin2026';
+
+      if (payload.password === expectedPassword) {
+        const token = crypto.randomBytes(24).toString('hex');
+        activeAdminTokens.add(token);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, token }));
+      } else {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: 'Hatalı şifre.' }));
+      }
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, error: 'Sunucu hatası.' }));
+    }
+    return;
+  }
+
+  // -----------------------------------------------------------
+  // API ROUTE: Admin Quotes (List & Delete)
+  // -----------------------------------------------------------
+  if (pathname === '/api/admin/quotes' && req.method === 'GET') {
+    if (!verifyAdmin(req)) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Yetkisiz erişim.' }));
+      return;
+    }
+    try {
+      const quotes = JSON.parse(fs.readFileSync(QUOTES_FILE, 'utf-8') || '[]');
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, quotes }));
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Kayıtlar okunamadı.' }));
+    }
+    return;
+  }
+
+  if (pathname.startsWith('/api/admin/quotes/') && req.method === 'DELETE') {
+    if (!verifyAdmin(req)) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Yetkisiz erişim.' }));
+      return;
+    }
+    const idToDelete = pathname.split('/').pop();
+    try {
+      let quotes = JSON.parse(fs.readFileSync(QUOTES_FILE, 'utf-8') || '[]');
+      quotes = quotes.filter(q => q.id !== idToDelete);
+      fs.writeFileSync(QUOTES_FILE, JSON.stringify(quotes, null, 2), 'utf-8');
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true }));
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Silinemedi.' }));
+    }
+    return;
+  }
+
+  // -----------------------------------------------------------
+  // API ROUTE: Admin Settings (Get & Update)
+  // -----------------------------------------------------------
+  if (pathname === '/api/admin/settings' && req.method === 'GET') {
+    if (!verifyAdmin(req)) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Yetkisiz erişim.' }));
+      return;
+    }
+    const s = getSettings();
+    const safeSettings = { ...s };
+    delete safeSettings.admin_password; // Never expose password in GET
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ success: true, settings: safeSettings }));
+    return;
+  }
+
+  if (pathname === '/api/admin/settings' && req.method === 'POST') {
+    if (!verifyAdmin(req)) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Yetkisiz erişim.' }));
+      return;
+    }
+    try {
+      const payload = await parseJsonBody(req);
+      const current = getSettings();
+      const updated = {
+        ...current,
+        phone: payload.phone || current.phone,
+        phone_mobile: payload.phone_mobile || current.phone_mobile,
+        whatsapp: payload.whatsapp || current.whatsapp,
+        email: payload.email || current.email,
+        address: payload.address || current.address,
+        hero_title: payload.hero_title || current.hero_title,
+        hero_subtitle: payload.hero_subtitle || current.hero_subtitle
+      };
+      if (payload.new_password) {
+        updated.admin_password = payload.new_password;
+      }
+      updateSettingsFile(updated);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, message: 'Ayarlar güncellendi.' }));
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Ayarlar güncellenemedi.' }));
+    }
+    return;
+  }
+
+  // Public Settings API for frontend sync
+  if (pathname === '/api/settings' && req.method === 'GET') {
+    const s = getSettings();
+    const safeSettings = { ...s };
+    delete safeSettings.admin_password;
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(safeSettings));
     return;
   }
 
