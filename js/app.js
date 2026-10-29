@@ -4,6 +4,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  initSiteSettings();
   initAntigravityCanvas();
   initNavbarScroll();
   initMobileMenu();
@@ -13,6 +14,78 @@ document.addEventListener('DOMContentLoaded', () => {
   initQuoteForm();
   initCounters();
 });
+
+/* -------------------------------------------------------------
+ * 0. Dynamic Admin Settings Synchronization (/api/settings)
+ * ------------------------------------------------------------- */
+window.__ayazSettings = {
+  phone: '+90 542 431 45 72',
+  phone_mobile: '+90 542 431 45 72',
+  whatsapp: '905424314572',
+  email: 'info@ayazmuhendislik.com',
+  address: 'Merkez Mah. Merter Sok. No:43 Güngören/İstanbul'
+};
+
+async function initSiteSettings() {
+  try {
+    const res = await fetch('/api/settings', { cache: 'no-store' });
+    if (!res.ok) return;
+    const s = await res.json();
+    if (!s || typeof s !== 'object') return;
+    window.__ayazSettings = { ...window.__ayazSettings, ...s };
+
+    // 1. Address
+    const addrEl = document.getElementById('contact-address');
+    if (addrEl && s.address) {
+      addrEl.textContent = s.address;
+    }
+
+    // 2. Phones (Landline & Mobile)
+    const phonesEl = document.getElementById('contact-phones');
+    if (phonesEl && (s.phone || s.phone_mobile)) {
+      const p1 = (s.phone || '').trim();
+      const p2 = (s.phone_mobile || '').trim();
+      const p1Href = 'tel:' + p1.replace(/[^0-9+]/g, '');
+      const p2Href = 'tel:' + p2.replace(/[^0-9+]/g, '');
+
+      if (p1 && p2 && p1 !== p2) {
+        phonesEl.innerHTML = `<a href="${p1Href}" class="hover:text-white transition-colors">${p1}</a> / <a href="${p2Href}" class="hover:text-white transition-colors">${p2}</a>`;
+      } else {
+        const single = p1 || p2;
+        const singleHref = p1 ? p1Href : p2Href;
+        phonesEl.innerHTML = `<a href="${singleHref}" class="hover:text-white transition-colors">${single}</a>`;
+      }
+    }
+
+    // 3. Email
+    const emailEl = document.getElementById('contact-email');
+    if (emailEl && s.email) {
+      emailEl.textContent = s.email;
+      emailEl.href = `mailto:${s.email.trim()}`;
+    }
+
+    // 4. WhatsApp Links Across Storefront
+    if (s.whatsapp) {
+      const cleanWa = String(s.whatsapp).replace(/[^0-9]/g, '');
+      if (cleanWa) {
+        const defaultMsg = encodeURIComponent('Merhaba Ayaz Mühendislik, projemiz için ücretsiz keşif talebinde bulunmak istiyoruz.');
+        const waLinks = document.querySelectorAll('a[data-wa-link], a[href*="wa.me/"]');
+        waLinks.forEach((a) => {
+          if (a.id === 'rfq-whatsapp-cta') return;
+          a.href = `https://wa.me/${cleanWa}?text=${defaultMsg}`;
+        });
+      }
+    }
+
+    // 5. Hero Subtitle
+    const heroSubEl = document.getElementById('hero-subtitle-text');
+    if (heroSubEl && s.hero_subtitle) {
+      heroSubEl.textContent = s.hero_subtitle;
+    }
+  } catch (err) {
+    console.warn('Settings sync skipped:', err);
+  }
+}
 
 /* -------------------------------------------------------------
  * 1. Antigravity Particle & Vector Grid Canvas
@@ -518,7 +591,8 @@ function initQuoteForm() {
     }
 
     let ticketCode = 'AYAZ-MÜH-' + Math.floor(100000 + Math.random() * 900000);
-    let waUrl = `https://wa.me/905000000000?text=${encodeURIComponent('Merhaba Ayaz Mühendislik, keşif teklifi talebim var.')}`;
+    const fallbackWa = ((window.__ayazSettings && window.__ayazSettings.whatsapp) || '905424314572').replace(/[^0-9]/g, '');
+    let waUrl = `https://wa.me/${fallbackWa}?text=${encodeURIComponent('Merhaba Ayaz Mühendislik, keşif teklifi talebim var.')}`;
 
     try {
       // Real API Call to Backend

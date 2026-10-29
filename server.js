@@ -31,11 +31,11 @@ if (!fs.existsSync(QUOTES_FILE)) {
 }
 if (!fs.existsSync(SETTINGS_FILE)) {
   fs.writeFileSync(SETTINGS_FILE, JSON.stringify({
-    phone: "+90 (212) 500 00 00",
-    phone_mobile: "+90 (500) 000 00 00",
-    whatsapp: "905000000000",
+    phone: "+90 542 431 45 72",
+    phone_mobile: "+90 542 431 45 72",
+    whatsapp: "905424314572",
     email: "info@ayazmuhendislik.com",
-    address: "Organize Sanayi Bölgesi, Endüstriyel Tesisler Caddesi, No: 42",
+    address: "Merkez Mah. Merter Sok. No:43 Güngören/İstanbul",
     hero_title: "Soğutma Hatlarında Kusursuz İzolasyon, Maksimum Enerji Verimliliği.",
     hero_subtitle: "Endüstriyel tesisler, soğuk hava depoları ve merkezi chiller santrallerinde sıfır yoğuşma garantili, termografik kaçak test onaylı elastomerik kauçuk ve hassas pres alüminyum sac kaplama (jacketing) mühendisliği.",
     admin_password: "ayazadmin2026"
@@ -197,7 +197,7 @@ const server = http.createServer(async (req, res) => {
       );
       // Read dynamic whatsapp from settings
       const settings = getSettings();
-      const targetWa = (settings.whatsapp || '905000000000').replace(/[^0-9]/g, '');
+      const targetWa = (settings.whatsapp || '905424314572').replace(/[^0-9]/g, '');
       const whatsappUrl = `https://wa.me/${targetWa}?text=${waText}`;
 
       res.writeHead(201, { 'Content-Type': 'application/json' });
@@ -398,11 +398,11 @@ const server = http.createServer(async (req, res) => {
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
     // Caching Strategy
-    if (ext === '.html') {
+    if (ext === '.html' || ext === '.js') {
       res.setHeader('Cache-Control', 'no-cache, must-revalidate');
     } else if (['.jpg', '.jpeg', '.png', '.webp', '.svg', '.ico'].includes(ext)) {
       res.setHeader('Cache-Control', 'public, max-age=2592000, immutable'); // 30 days
-    } else if (['.css', '.js'].includes(ext)) {
+    } else if (ext === '.css') {
       res.setHeader('Cache-Control', 'public, max-age=86400'); // 1 day
     }
 

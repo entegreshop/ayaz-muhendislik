@@ -87,7 +87,7 @@
 
       <!-- Desktop CTA & Action -->
       <div class="hidden sm:flex items-center gap-4">
-        <a href="https://wa.me/905000000000?text=Merhaba%20Ayaz%20Mühendislik,%20projemiz%20için%20ücretsiz%20keşif%20talebinde%20bulunmak%20istiyoruz." target="_blank" rel="noopener" class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-mono text-slate-300 border border-slate-700 hover:border-sky-400 hover:text-white transition-all bg-slate-900/60 backdrop-blur-md">
+        <a id="header-wa-link" data-wa-link="true" href="https://wa.me/905424314572?text=Merhaba%20Ayaz%20Mühendislik,%20projemiz%20için%20ücretsiz%20keşif%20talebinde%20bulunmak%20istiyoruz." target="_blank" rel="noopener" class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-mono text-slate-300 border border-slate-700 hover:border-sky-400 hover:text-white transition-all bg-slate-900/60 backdrop-blur-md">
           <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.587-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.2.534 1.288.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.181-.076.355.101.173.449.741.963 1.2 1.009.897 1.488.949 1.705 1.05.217.101.347.087.476-.058.13-.145.549-.636.693-.853.145-.217.289-.174.491-.101.202.072 1.285.607 1.502.723.217.116.361.173.419.275.058.101.058.593-.086.998z"/>
           </svg>
@@ -133,7 +133,7 @@
       <a href="#teklif-al" class="mobile-nav-link block w-full py-3 text-center font-bold text-white bg-sky-500 rounded-xl shadow-lg shadow-sky-500/30">
         Teklif Al & Keşif İste
       </a>
-      <a href="https://wa.me/905000000000" class="block w-full py-3 text-center text-sm font-mono text-slate-300 bg-slate-900 border border-slate-800 rounded-xl">
+      <a id="mobile-wa-link" data-wa-link="true" href="https://wa.me/905424314572?text=Merhaba%20Ayaz%20Mühendislik,%20projemiz%20için%20ücretsiz%20keşif%20talebinde%20bulunmak%20istiyoruz." target="_blank" rel="noopener" class="block w-full py-3 text-center text-sm font-mono text-slate-300 bg-slate-900 border border-slate-800 rounded-xl">
         WhatsApp Doğrudan Keşif Hattı
       </a>
     </div>
@@ -165,7 +165,7 @@
           </h1>
 
           <!-- Subtitle -->
-          <p class="text-base sm:text-lg text-slate-300 font-normal max-w-2xl leading-relaxed">
+          <p id="hero-subtitle-text" class="text-base sm:text-lg text-slate-300 font-normal max-w-2xl leading-relaxed">
             Endüstriyel tesisler, soğuk hava depoları ve merkezi chiller santrallerinde sıfır yoğuşma garantili, termografik kaçak test onaylı elastomerik kauçuk ve hassas pres alüminyum sac kaplama (jacketing) mühendisliği.
           </p>
 
@@ -849,7 +849,7 @@
                 </div>
                 <div>
                   <h4 class="text-sm font-bold text-white">Merkez Ofis & Atölye</h4>
-                  <p class="text-xs text-slate-400 mt-0.5">Organize Sanayi Bölgesi, Endüstriyel Tesisler Caddesi, No: 42</p>
+                  <p id="contact-address" class="text-xs text-slate-400 mt-0.5">Merkez Mah. Merter Sok. No:43 Güngören/İstanbul</p>
                   <p class="text-xs text-sky-400 font-mono mt-1">Türkiye Geneli Saha Montajı</p>
                 </div>
               </div>
@@ -860,8 +860,10 @@
                 </div>
                 <div>
                   <h4 class="text-sm font-bold text-white">Mühendislik & İletişim Hattı</h4>
-                  <p class="text-xs text-slate-400 mt-0.5">+90 (212) 500 00 00 / +90 (500) 000 00 00</p>
-                  <p class="text-xs text-sky-400 font-mono mt-1">info@ayazmuhendislik.com</p>
+                  <p id="contact-phones" class="text-xs text-slate-400 mt-0.5">
+                    <a id="contact-phone-1" href="tel:+905424314572" class="hover:text-white transition-colors">+90 542 431 45 72</a>
+                  </p>
+                  <a id="contact-email" href="mailto:info@ayazmuhendislik.com" class="text-xs text-sky-400 font-mono mt-1 hover:underline inline-block">info@ayazmuhendislik.com</a>
                 </div>
               </div>
 
@@ -872,7 +874,7 @@
                 <div>
                   <h4 class="text-sm font-bold text-white">Anında WhatsApp Keşif Hattı</h4>
                   <p class="text-xs text-slate-400 mt-0.5">Saha fotoğraflarınızı doğrudan mühendislerimize iletin.</p>
-                  <a href="https://wa.me/905000000000" target="_blank" rel="noopener" class="text-xs text-emerald-400 font-mono mt-1 hover:underline inline-block">
+                  <a id="contact-wa-link" data-wa-link="true" href="https://wa.me/905424314572?text=Merhaba%20Ayaz%20Mühendislik,%20projemiz%20için%20ücretsiz%20keşif%20talebinde%20bulunmak%20istiyoruz." target="_blank" rel="noopener" class="text-xs text-emerald-400 font-mono mt-1 hover:underline inline-block">
                     WhatsApp Sohbeti Başlat &rarr;
                   </a>
                 </div>
@@ -1120,7 +1122,7 @@
           <p class="text-slate-400 leading-relaxed">
             Fabrikanızda termal kaçak veya yoğuşma sorunu mu var? Mühendisimiz hemen yerinde incelesin.
           </p>
-          <a href="https://wa.me/905000000000" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600 hover:text-white transition-all font-mono">
+          <a id="footer-wa-link" data-wa-link="true" href="https://wa.me/905424314572?text=Merhaba%20Ayaz%20Mühendislik,%20projemiz%20için%20ücretsiz%20keşif%20talebinde%20bulunmak%20istiyoruz." target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600 hover:text-white transition-all font-mono">
             <span>WhatsApp Keşif Hattı</span>
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.587-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.2.534 1.288.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.181-.076.355.101.173.449.741.963 1.2 1.009.897 1.488.949 1.705 1.05.217.101.347.087.476-.058.13-.145.549-.636.693-.853.145-.217.289-.174.491-.101.202.072 1.285.607 1.502.723.217.116.361.173.419.275.058.101.058.593-.086.998z"/></svg>
           </a>
@@ -1137,6 +1139,6 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="./js/app.js"></script>
+  <script src="./js/app.js?v=20261029"></script>
 </body>
 </html>
